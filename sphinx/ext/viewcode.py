@@ -163,7 +163,11 @@ def collect_pages(app: Sphinx) -> Iterator[Tuple[str, Dict[str, Any], str]]:
             lexer = env.config.highlight_language
         else:
             lexer = 'python'
-        highlighted = highlighter.highlight_block(code, lexer, linenos=False)
+        highlighted = highlighter.highlight_block(code, lexer, linenos="inline")
+        withlines = highlighter.highlight_block(code, lexer, linenos=True)
+        split_pre = withlines.split('<pre>')
+        table_open = '<pre>'.join(split_pre[:-1])
+        table_close = '<pre>'.join(split_pre[-1].split('</pre>')[-1:])
         # split the code into lines
         lines = highlighted.splitlines()
         # split off wrap markup from the first line of the actual code
@@ -195,12 +199,15 @@ def collect_pages(app: Sphinx) -> Iterator[Tuple[str, Dict[str, Any], str]]:
         parents.append({'link': urito(pagename, '_modules/index'),
                         'title': _('Module code')})
         parents.reverse()
+        # hacking in line numbers
+        code_content = '\n'.join(lines)
+        # code_content = table_open+'<pre>'+code_content+'</pre>'+table_close
+
         # putting it all together
         context = {
             'parents': parents,
             'title': modname,
-            'body': (_('<h1>Source code for %s</h1>') % modname +
-                     '\n'.join(lines)),
+            'body': (_('<h1>Source code for %s</h1>') % modname + code_content),
         }
         yield (pagename, context, 'page.html')
 
