@@ -1797,7 +1797,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value('autodoc_typehints', "signature", True,
                          ENUM("signature", "description", "none"))
     app.add_config_value('autodoc_warningiserror', True, True)
-    app.add_config_value('autodoc_inherit_docstrings', True, True)
+    app.add_config_value('autodoc_inherit_docstrings', False, True)
     app.add_event('autodoc-before-process-signature')
     app.add_event('autodoc-process-docstring')
     app.add_event('autodoc-process-signature')
